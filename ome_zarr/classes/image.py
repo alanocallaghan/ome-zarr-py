@@ -348,7 +348,9 @@ class OMEZarrMultiscaleBase:
         else:
             store_exists = True  # zarr.Group was passed in, so it exists
 
-            # Decide whether to write main image data
+        # Decide whether to write main image data
+        if store_exists and not overwrite:
+            warnings.warn("store exists but overwrite=False")
         write_image_data = not store_exists or overwrite
 
         if write_image_data:
