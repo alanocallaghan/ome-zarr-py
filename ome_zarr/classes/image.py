@@ -350,7 +350,7 @@ class OMEZarrMultiscaleBase:
 
         # Decide whether to write main image data
         if store_exists and not overwrite:
-            raise IOError("store exists but overwrite=False")
+            raise OSError("store exists but overwrite=False")
 
         # Delete existing store if overwriting
         if overwrite and isinstance(group, str) and os.path.exists(group):
@@ -409,15 +409,11 @@ class OMEZarrMultiscaleBase:
             )
             write_datasets.append(dataset)
 
-        write_metadata = self.metadata.model_copy(
-            update={"datasets": write_datasets}
-        )
+        write_metadata = self.metadata.model_copy(update={"datasets": write_datasets})
 
         if version == "0.4":
             # in v0.4, metadata is stored under "multiscales" attribute
-            metadata_dict = write_metadata.to_version("0.4").model_dump(
-                by_alias=True
-            )
+            metadata_dict = write_metadata.to_version("0.4").model_dump(by_alias=True)
             metadata_dict = _recursive_pop_nones(metadata_dict)
             metadata_dict["version"] = version
             group.attrs["multiscales"] = [metadata_dict]
